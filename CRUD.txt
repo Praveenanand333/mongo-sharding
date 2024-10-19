@@ -1,0 +1,245 @@
+CRUD Operations
+
+1)To insert a new player in the collection
+
+db["Valorant-Data"].insertOne({
+  "Region": "North America",
+  "Team": "Sentinels",
+  "Player": "Redux",
+  "Rnd": 590,
+  "ACS": 255,
+  "K:D": 1.25,
+  "KAST": "72.5%",
+  "ADR": 160,
+  "KPR": 0.85,
+  "APR": 0.18,
+  "FKPR": 0.19,
+  "FDPR": 0.16,
+  "HS%": 0.22,
+  "CL%": 0.30,
+  "Clutches": 9,
+  "KMax": 28,
+  "K": 500,
+  "D": 400,
+  "A": 100,
+  "FK": 110,
+  "FD": 85,
+  "FK+FD": 195,
+  "Opening Duel Win %": "58.0%",
+  "FK/FD": 1.3
+})
+
+
+2)To insert many players to a new team
+
+db["Valorant-Data"].insertMany([
+    {
+      "Region": "North America",
+      "Team": "Twitchers",
+      "Player": "Sinatara",
+      "Rnd": 600,
+      "ACS": 260,
+      "K:D": 1.30,
+      "KAST": "73.0%",
+      "ADR": 170,
+      "KPR": 0.90,
+      "APR": 0.20,
+      "FKPR": 0.18,
+      "FDPR": 0.15,
+      "HS%": 0.23,
+      "CL%": 0.29,
+      "Clutches": 10,
+      "KMax": 30,
+      "K": 550,
+      "D": 420,
+      "A": 130,
+      "FK": 115,
+      "FD": 95,
+      "FK+FD": 210,
+      "Opening Duel Win %": "60.0%",
+      "FK/FD": 1.2
+    },
+    {
+      "Region": "North America",
+      "Team": "Twitchers",
+      "Player": "Eggster",
+      "Rnd": 590,
+      "ACS": 250,
+      "K:D": 1.20,
+      "KAST": "71.0%",
+      "ADR": 165,
+      "KPR": 0.85,
+      "APR": 0.19,
+      "FKPR": 0.16,
+      "FDPR": 0.14,
+      "HS%": 0.20,
+      "CL%": 0.28,
+      "Clutches": 8,
+      "KMax": 28,
+      "K": 520,
+      "D": 430,
+      "A": 120,
+      "FK": 105,
+      "FD": 90,
+      "FK+FD": 195,
+      "Opening Duel Win %": "57.0%",
+      "FK/FD": 1.1
+    },
+    {
+      "Region": "North America",
+      "Team": "Twitchers",
+      "Player": "Sam",
+      "Rnd": 580,
+      "ACS": 240,
+      "K:D": 1.10,
+      "KAST": "69.0%",
+      "ADR": 160,
+      "KPR": 0.80,
+      "APR": 0.18,
+      "FKPR": 0.17,
+      "FDPR": 0.16,
+      "HS%": 0.21,
+      "CL%": 0.27,
+      "Clutches": 7,
+      "KMax": 27,
+      "K": 500,
+      "D": 450,
+      "A": 110,
+      "FK": 100,
+      "FD": 85,
+      "FK+FD": 185,
+      "Opening Duel Win %": "55.5%",
+      "FK/FD": 1.0
+    },
+    {
+      "Region": "North America",
+      "Team": "Twitchers",
+      "Player": "Traik",
+      "Rnd": 570,
+      "ACS": 245,
+      "K:D": 1.15,
+      "KAST": "70.5%",
+      "ADR": 162,
+      "KPR": 0.82,
+      "APR": 0.18,
+      "FKPR": 0.19,
+      "FDPR": 0.17,
+      "HS%": 0.22,
+      "CL%": 0.28,
+      "Clutches": 9,
+      "KMax": 29,
+      "K": 510,
+      "D": 440,
+      "A": 115,
+      "FK": 108,
+      "FD": 88,
+      "FK+FD": 196,
+      "Opening Duel Win %": "58.5%",
+      "FK/FD": 1.2
+    },
+    {
+      "Region": "North America",
+      "Team": "Twitchers",
+      "Player": "Joanas",
+      "Rnd": 565,
+      "ACS": 248,
+      "K:D": 1.18,
+      "KAST": "71.2%",
+      "ADR": 168,
+      "KPR": 0.84,
+      "APR": 0.19,
+      "FKPR": 0.18,
+      "FDPR": 0.16,
+      "HS%": 0.23,
+      "CL%": 0.29,
+      "Clutches": 10,
+      "KMax": 30,
+      "K": 515,
+      "D": 425,
+      "A": 120,
+      "FK": 110,
+      "FD": 90,
+      "FK+FD": 200,
+      "Opening Duel Win %": "59.0%",
+      "FK/FD": 1.22
+    }
+  ])
+
+  
+3)To list the top 5 players with high headshot%
+
+  db["Valorant-Data"].find({}, {Player: 1, Team: 1, "HS%": 1, _id: 0})
+  .sort({"HS%": -1})
+  .limit(5)
+
+4)To list the top 5 teams with most kills
+
+db["Valorant-Data"].aggregate([
+    {
+      $group: {
+        _id: "$Team",
+        totalKills: { $sum: "$K" }
+      }
+    },
+    { 
+      $sort: { totalKills: -1 } 
+    },
+    { 
+      $limit: 5 
+    }
+  ])
+
+  
+5)To list all the teams with player count
+
+db["Valorant-Data"].aggregate([
+    {
+      $group: {
+        _id: "$Team",
+        numberOfPlayers: { $sum: 1 }
+      }
+    },
+    {
+      $sort: { numberOfPlayers: -1 }
+    }
+  ])
+
+6)Rename a team
+
+db["Valorant-Data"].updateMany(
+  { Team: "Twitchers" },
+  { $set: { Team: "WStreamers" } }  
+)
+
+7)To delete the player with lowest KD ratio
+
+const playerToDelete = db["Valorant-Data"].find()
+  .sort({ "K:D": 1 })  
+  .limit(1)            
+  .toArray()[0];      
+
+if (playerToDelete) {
+  db["Valorant-Data"].deleteOne({ _id: playerToDelete._id }); 
+}
+
+8)To delete the players in a team
+
+db["Valorant-Data"].deleteMany({ Team: "Cloud9" })
+
+9)To Retrieve Players with a Specific Performance Threshold
+
+db["Valorant-Data"].find(
+  { ADR: { $gt: 150 } },  
+  { Player: 1, Team: 1, ADR: 1, _id: 0 } 
+)
+
+10) To Update Player Stats for a Specific Team
+
+db["Valorant-Data"].updateMany(
+  { Team: "Twitchers" },  
+  { $set: { ACS: 300 } } 
+)
+
+  
+
+
